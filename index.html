@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Invitación del viernes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE: alegre y simple, como una tarjeta de cumpleaños de las de antes
+   IDEA: una tarjeta de invitación impresa, con banderines y confeti
+   PICTURE: guirnalda de banderines + tarjeta grande con los datos
+   COLOUR and TYPE: amarillo de fondo, azul, rosa y verde agua; Fredoka + Nunito
+   LAYOUT: una sola tarjeta centrada en una pantalla, botones abajo */
+:root{color-scheme:light dark;--bg:light-dark(#ffd23f,#2a2340);--card:light-dark(#ffffff,#3a3158);--ink:light-dark(#1f1b2e,#fff7e0);--soft:light-dark(#5b5470,#cfc6e8);--blue:#3a86ff;--pink:#ff4f81;--teal:#16c6a8;--line:light-dark(#1f1b2e,#fff7e0)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 Nunito,system-ui,sans-serif;overflow-x:hidden;min-height:100vh;min-height:100dvh;display:grid;place-items:safe center;padding:16px 16px 28px}
+.dots{position:fixed;inset:0;pointer-events:none;background-image:radial-gradient(var(--pink) 3px,transparent 4px),radial-gradient(var(--blue) 3px,transparent 4px),radial-gradient(var(--teal) 3px,transparent 4px);background-size:90px 90px,130px 130px,110px 110px;background-position:10px 20px,60px 70px,30px 100px;opacity:.55}
+.card{position:relative;width:min(440px,100%);background:var(--card);border:3px solid var(--line);border-radius:22px;box-shadow:8px 8px 0 var(--line);padding:0 26px 26px;text-align:center}
+.garland{display:block;width:calc(100% + 52px);margin:0 -26px 6px;height:70px}
+.tag{display:inline-block;font:600 14px Fredoka,sans-serif;background:var(--teal);color:#fff;border-radius:99px;padding:4px 14px}
+h1{font:700 clamp(36px,10vw,50px)/1.02 Fredoka,sans-serif;margin:12px 0 6px;text-wrap:balance}
+.sub{color:var(--soft);margin:0 0 18px}
+.info{display:grid;gap:8px;margin:0 0 22px;text-align:left}
+.row{display:flex;gap:12px;align-items:center;border:2px dashed var(--soft);border-radius:14px;padding:10px 14px}
+.row b{font:600 15px Fredoka,sans-serif;color:var(--pink);width:54px;flex:none}
+.row span{font-weight:700}
+.q{font:600 22px Fredoka,sans-serif;margin:0 0 14px}
+.btns{display:flex;gap:14px;justify-content:center;align-items:center;flex-wrap:wrap;min-height:60px}
+button{font:600 19px Fredoka,sans-serif;border:3px solid var(--line);border-radius:14px;padding:10px 30px;min-height:52px;cursor:pointer;box-shadow:4px 4px 0 var(--line);transition:transform .12s}
+button:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--line)}
+button:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+#si{background:var(--blue);color:#fff;transition:font-size .25s,padding .25s;position:relative;z-index:10}
+#no{background:var(--pink);color:#fff;z-index:20;transition:left .25s ease,top .25s ease}
+#no.free{position:fixed}
+.done{display:none}
+.card.ok .ask,.card.ok .sub{display:none}.card.ok .done{display:block}
+.card.ok .info{margin-bottom:16px}
+.msg{border:2px solid var(--line);border-radius:14px;padding:14px;background:light-dark(#fff8d6,#2a2340);text-align:left;margin:0 0 14px;white-space:pre-wrap}
+.acts{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.acts button,.acts a{font-size:16px;padding:8px 18px;min-height:46px}
+.acts a{display:inline-flex;align-items:center;font:600 16px Fredoka,sans-serif;border:3px solid var(--line);border-radius:14px;box-shadow:4px 4px 0 var(--line);background:var(--teal);color:#fff;text-decoration:none;padding:8px 18px}
+#copy{background:var(--blue);color:#fff}
+.note{font-size:14px;color:var(--soft);min-height:21px;margin:10px 0 0}
+.bubble{position:fixed;font:700 22px Fredoka,sans-serif;color:var(--pink);pointer-events:none;animation:up 1s ease-out forwards;z-index:30}
+@keyframes up{to{transform:translateY(-60px);opacity:0}}
+.conf{position:fixed;top:-12px;width:10px;height:14px;pointer-events:none;animation:fall linear forwards;z-index:40}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+#susto{position:fixed;inset:0;z-index:100;background:#000;display:none;place-items:center;overflow:hidden}
+#susto.on{display:grid;animation:flash .12s steps(2) 6}
+#susto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2;animation:lunge 1.5s cubic-bezier(.2,1.6,.3,1) forwards,shake .07s linear infinite}
+#susto svg{width:min(130vw,130vh);height:auto;animation:lunge 1.5s cubic-bezier(.2,1.6,.3,1) forwards,shake .07s linear infinite}
+@keyframes lunge{0%{transform:scale(.35)}18%{transform:scale(1.15)}100%{transform:scale(1.3)}}
+@keyframes shake{0%{translate:0 0}25%{translate:-14px 9px}50%{translate:12px -11px}75%{translate:-9px -7px}100%{translate:0 0}}
+@keyframes flash{0%{background:#000}50%{background:#5a0000}}
+@media(prefers-reduced-motion:reduce){.bubble,.conf{animation:none;display:none}#no{transition:none}}
+</style>
+</head>
+<body>
+<div class="dots"></div>
+<div id="susto" aria-hidden="true"><img id="fotoSusto" src="susto.jpg" alt="" onerror="this.remove()"><svg viewBox="0 0 400 500">
+<defs><radialGradient id="piel" cx="50%" cy="40%" r="60%"><stop offset="0" stop-color="#c9cfc0"/><stop offset=".7" stop-color="#7d8676"/><stop offset="1" stop-color="#2b302a"/></radialGradient>
+<radialGradient id="ojo"><stop offset="0" stop-color="#000"/><stop offset=".8" stop-color="#050505"/><stop offset="1" stop-color="#3a3f37"/></radialGradient></defs>
+<path d="M200 18C95 18 52 120 60 230c7 95 50 190 140 252 90-62 133-157 140-252 8-110-35-212-140-212z" fill="url(#piel)"/>
+<path d="M120 120c20-10 40-8 55 4M225 124c15-12 35-14 55-4M190 60l-8 40 10 25M300 260l-25 20-5 30M95 280l20 15" stroke="#3b3f36" stroke-width="3" fill="none" opacity=".7"/>
+<ellipse cx="140" cy="190" rx="44" ry="58" fill="url(#ojo)" transform="rotate(-12 140 190)"/>
+<ellipse cx="260" cy="190" rx="44" ry="58" fill="url(#ojo)" transform="rotate(12 260 190)"/>
+<circle cx="146" cy="196" r="5" fill="#fff"/><circle cx="254" cy="196" r="5" fill="#fff"/>
+<path d="M188 245l-8 28h40l-8-28z" fill="#1b1e19" opacity=".8"/>
+<path d="M130 300c25-14 115-14 140 0 10 60-18 150-70 165-52-15-80-105-70-165z" fill="#000"/>
+<path d="M138 304l10 22 10-24 10 26 10-27 10 27 12-27 10 27 10-26 10 24 10-22" fill="#e9e4cf"/>
+<path d="M160 448l8-20 8 18 8-22 8 22 8-22 8 22 8-18 8 20" fill="#e9e4cf"/>
+</svg></div>
+
+<main class="card" id="card">
+  <svg class="garland" viewBox="0 0 440 70" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0 8 Q220 40 440 8" fill="none" stroke="currentColor" stroke-width="2"/>
+    <g id="flags"></g>
+  </svg>
+  <span class="tag">Estás invitad@</span>
+  <h1>¡Plan para el viernes!</h1>
+  <p class="sub">Te quiero invitar a salir el viernes a la noche. ¿Te prendés?</p>
+  <div class="info">
+    <div class="row"><b>Día</b><span id="dia"></span></div>
+    <div class="row"><b>Hora</b><span id="hora"></span></div>
+    <div class="row"><b>Dónde</b><span id="lugar"></span></div>
+  </div>
+
+  <div class="ask">
+    <p class="q">¿Venís?</p>
+    <div class="btns">
+      <button id="si" type="button">Sí</button>
+      <button id="no" type="button">No</button>
+    </div>
+  </div>
+
+  <div class="done">
+    <p class="q">¡Genial! 🎉 Mandame esto:</p>
+    <div class="msg" id="msg"></div>
+    <div class="acts">
+      <button id="copy" type="button">Copiar mensaje</button>
+      <a id="wa" href="#" target="_blank" rel="noopener">Enviar por WhatsApp</a>
+    </div>
+    <p class="note" id="note"></p>
+  </div>
+</main>
+
+<script>
+{
+/* ===== Cambiá estos datos ===== */
+const CONFIG = {
+  dia: "Viernes 27 de noviembre",
+  hora: "21:00 hs",
+  lugar: "A definir",
+  telefono: "", // tu número con código de país, sin + ni espacios. Ej: 5493815555555
+  mensaje: "¡Acepto la invitación! 🙌 Nos vemos el viernes a la noche."
+};
+
+const $ = id => document.getElementById(id);
+$("dia").textContent = CONFIG.dia;
+$("hora").textContent = CONFIG.hora;
+$("lugar").textContent = CONFIG.lugar;
+
+/* banderines */
+const cols = ["#3a86ff","#ff4f81","#16c6a8","#ffb703"];
+let f = "";
+for (let i = 0; i < 11; i++) {
+  const x = 20 + i * 40, t = x / 440, y = 8 + 4 * t * (1 - t) * 16 * 2 / 2;
+  f += `<path d="M${x-15} ${y} L${x+15} ${y} L${x} ${y+32} Z" fill="${cols[i%4]}" stroke="currentColor" stroke-width="1.5"/>`;
+}
+$("flags").innerHTML = f;
+
+/* ===== sonido gracioso (trombón triste) ===== */
+const RISA = "trombon.mp3";
+let risa;
+function laugh() {
+  try {
+    risa = risa || new Audio(RISA);
+    risa.pause(); risa.currentTime = 0;
+    const p = risa.play(); if (p && p.catch) p.catch(() => {});
+  } catch (e) {}
+}
+
+/* ===== botón No que escapa ===== */
+
+/* ===== jumpscare ===== */
+const GRITO = "grito.mp3";
+let asustado = false, grito;
+function susto() {
+  asustado = true;
+  try { grito = grito || new Audio(GRITO); grito.currentTime = 0; grito.volume = 1; const p = grito.play(); if (p && p.catch) p.catch(() => {}); } catch (e) {}
+  try { navigator.vibrate && navigator.vibrate([300, 80, 400]); } catch (e) {}
+  const s = $("susto");
+  s.classList.remove("on"); s.offsetWidth; s.classList.add("on");
+  setTimeout(() => s.classList.remove("on"), 1700);
+}
+
+const no = $("no"), si = $("si");
+const textos = ["No", "¿Seguro?", "Pensalo bien", "Dale, no seas así", "Ni lo intentes", "Jaja no", "Imposible", "Tocá el otro"];
+let intentos = 0, ultimoEscape = 0;
+function escapar(e) {
+  if (e) e.preventDefault();
+  ultimoEscape = Date.now();
+  if (!asustado) susto(); else laugh();
+  const r = no.getBoundingClientRect();
+  const bx = r.left + r.width / 2, by = r.top;
+  const b = document.createElement("div");
+  b.className = "bubble"; b.textContent = "JAJAJA";
+  b.style.left = (bx - 40) + "px"; b.style.top = (by - 10) + "px";
+  document.body.appendChild(b); setTimeout(() => b.remove(), 1000);
+
+  if (!no.classList.contains("free")) {
+    no.style.left = r.left + "px"; no.style.top = r.top + "px";
+    no.classList.add("free"); no.offsetWidth;
+  }
+  intentos++;
+  no.textContent = textos[Math.min(intentos, textos.length - 1)];
+  const w = no.offsetWidth, h = no.offsetHeight, pad = 12;
+  const sr = si.getBoundingClientRect();
+  let x, y, tries = 0;
+  do {
+    x = pad + Math.random() * (innerWidth - w - pad * 2);
+    y = pad + Math.random() * (innerHeight - h - pad * 2);
+    tries++;
+  } while (tries < 30 && (Math.abs(x - r.left) < 80 && Math.abs(y - r.top) < 60 ||
+           x < sr.right + 10 && x + w > sr.left - 10 && y < sr.bottom + 10 && y + h > sr.top - 10));
+  no.style.left = x + "px"; no.style.top = y + "px";
+  si.style.fontSize = Math.min(19 + intentos * 5, 70) + "px";
+  si.style.padding = `${Math.min(10 + intentos * 3, 34)}px ${Math.min(30 + intentos * 8, 80)}px`;
+}
+no.addEventListener("touchstart", escapar, {passive: false});
+no.addEventListener("mousedown", escapar);
+no.addEventListener("click", e => e.preventDefault());
+no.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") escapar(e); });
+addEventListener("resize", () => { if (no.classList.contains("free")) { no.style.left = "12px"; no.style.top = "12px"; } });
+
+/* ===== Sí ===== */
+function texto() {
+  return `${CONFIG.mensaje}\n📅 ${CONFIG.dia} · ${CONFIG.hora}`;
+}
+si.addEventListener("click", () => {
+  if (Date.now() - ultimoEscape < 900) return;
+  no.remove();
+  $("card").classList.add("ok");
+  $("msg").textContent = texto();
+  const url = (CONFIG.telefono ? `https://wa.me/${CONFIG.telefono}` : "https://wa.me/") + "?text=" + encodeURIComponent(texto());
+  $("wa").href = url;
+  confetti();
+  setTimeout(() => $("wa").scrollIntoView({behavior: "smooth", block: "end"}), 50);
+});
+$("copy").addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText(texto());
+    $("note").textContent = "¡Copiado! Ahora pegalo en el chat.";
+  } catch (e) {
+    const range = document.createRange(); range.selectNodeContents($("msg"));
+    const sel = getSelection(); sel.removeAllRanges(); sel.addRange(range);
+    $("note").textContent = "Lo dejé seleccionado: mantené apretado y copiá.";
+  }
+});
+
+function confetti() {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  for (let i = 0; i < 70; i++) {
+    const c = document.createElement("div");
+    c.className = "conf";
+    c.style.left = Math.random() * 100 + "vw";
+    c.style.background = cols[i % 4];
+    c.style.animationDuration = (1.6 + Math.random() * 1.6) + "s";
+    c.style.animationDelay = Math.random() * 0.4 + "s";
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 3800);
+  }
+}
+}
+</script>
+</body>
+</html>
